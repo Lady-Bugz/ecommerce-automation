@@ -1,0 +1,35 @@
+@startuml
+|User|
+start
+
+#CornflowerBlue:Open Website;
+#CornflowerBlue:Click on Search bar;
+#CornflowerBlue:Enter "phone";
+#CornflowerBlue:Submit search;
+
+|UI|
+#GoldenRod:Render product results;
+
+|User|
+#CornflowerBlue:Hover on phone product;
+#CornflowerBlue:Click cart icon;
+
+|UI|
+#GoldenRod:Display "Add to Cart" popup;
+
+|User|
+#CornflowerBlue:Click "Proceed to Checkout";
+
+|UI|
+#GoldenRod:Display checkout form;
+
+|User|
+#CornflowerBlue:Fill shipping and billing info;
+#CornflowerBlue:Uncheck "Subscribe to Newsletter";
+
+#CornflowerBlue:Click "Complete Checkout";
+
+
+
+stop
+@enduml
