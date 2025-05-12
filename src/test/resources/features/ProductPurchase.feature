@@ -1,10 +1,10 @@
 Feature: Product Purchase Functionality
-
+@tc1
   Scenario: User completes the purchase process
     *  user is navigated to the application
     *  user searches for a product
-    *  user hovers over the product
-    *  user clicks the cart icon from the icons displayed
+    *  user hovers over the product and clicks add to cart
     *  user proceeds to checkout from the pop-up displayed
-    *  user fills out the registration form
-    *  user can complete the checkout process
+    *  user fills in details
+    *  user unchecks the store newsletter
+    *  user completes the checkout process
