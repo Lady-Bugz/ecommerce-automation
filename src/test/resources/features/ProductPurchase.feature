@@ -6,5 +6,5 @@ Feature: Product Purchase Functionality
     *  user hovers over the product and clicks add to cart
     *  user proceeds to checkout from the pop-up displayed
     *  user fills in details
-    *  user unchecks the store newsletter
+    *  user unchecks and checkmarks boxes
     *  user completes the checkout process

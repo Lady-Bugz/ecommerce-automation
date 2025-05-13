@@ -4,12 +4,15 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.CommonMethods;
 import utils.ConfigReader;
+
+import java.time.Duration;
 import java.util.List;
 
 public class ProductPurchaseSteps extends CommonMethods {
@@ -42,14 +45,9 @@ public class ProductPurchaseSteps extends CommonMethods {
                 // Get the 4th product (index 3)
                 WebElement fourthProduct = products.get(3);
 
-                // Initialize ActionChains for hover action
-                Actions actions = new Actions(driver);
-                // Perform hover action on the 4th product
-                actions.moveToElement(fourthProduct).perform();
+                hoverOverElement(driver, fourthProduct);
 
-                WebDriverWait wait=getWait();
-
-               WebElement cartIcon = wait.until(ExpectedConditions.visibilityOf(fourthProduct.findElement(By.cssSelector("button.btn.btn-cart.cart-75"))));
+               WebElement cartIcon = fourthProduct.findElement(By.cssSelector("button.btn.btn-cart.cart-75"));
                 click(cartIcon);
 
                 System.out.println("Hovered over the 4th product");
@@ -107,14 +105,40 @@ public class ProductPurchaseSteps extends CommonMethods {
        selectDropdown(state, stateName);
 
     }
-    @When("user unchecks the store newsletter")
-    public void user_unchecks_the_store_newsletter() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    @When("user unchecks and checkmarks boxes")
+    public void user_unchecks_and_checkmarks_boxes() {
+        WebDriverWait wait = getWait();
+
+        WebElement newsLetter = driver.findElement(By.cssSelector("label[for='input-newsletter']"));
+        wait.until(ExpectedConditions.elementToBeClickable(newsLetter));
+        click(newsLetter);
+
+        WebElement privacyPolicy = driver.findElement(By.cssSelector("label[for='input-account-agree']"));
+        wait.until(ExpectedConditions.elementToBeClickable(privacyPolicy));
+        click(privacyPolicy);
+
+        WebElement termsAndConditions = driver.findElement(By.cssSelector("label[for='input-agree']"));
+        wait.until(ExpectedConditions.elementToBeClickable(termsAndConditions));
+        click(termsAndConditions);
+
     }
+
     @Then("user completes the checkout process")
-    public void user_can_complete_the_checkout_process() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
+        public void user_can_complete_the_checkout_process () {
+        WebElement continueButton = driver.findElement(By.id("button-save"));
+        click(continueButton);
+
+        WebElement confirmOrderButton = driver.findElement(By.id("button-confirm"));
+        click(confirmOrderButton);
+
+        WebElement continueBtn = driver.findElement(By.xpath("//a[normalize-space()='Continue']"));
+        click(continueBtn);
+
+        }
+
+
 }
+
+
+
+

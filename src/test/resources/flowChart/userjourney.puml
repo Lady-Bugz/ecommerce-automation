@@ -26,6 +26,9 @@ start
 |User|
 #CornflowerBlue:Fill shipping and billing info;
 #CornflowerBlue:Uncheck "Subscribe to Newsletter";
+#CornflowerBlue:Checkmark "Privacy Policy";
+#CornflowerBlue:Checkmark "Terms and Conditions";
+
 
 #CornflowerBlue:Click "Complete Checkout";
 
