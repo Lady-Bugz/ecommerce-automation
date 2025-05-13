@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.UUID;
 
 public class ConfigReader {
     static Properties prop;
@@ -21,9 +22,20 @@ public class ConfigReader {
     }
 
     public static String getPropertyValue(String key){
-        return prop.getProperty(key);
+        String value = prop.getProperty(key);
 
+        // Check if the requested property is an email, if so, generate a dynamic one
+        if ("emailAddress".equals(key)) {
+            value = generateUniqueEmail();
+        }
+
+        return value;
     }
 
-
+    // Generate a unique email for each test run using UUID
+    private static String generateUniqueEmail() {
+        String baseEmail = "jay6@test.com";  // Use a base email address
+        String uniqueId = UUID.randomUUID().toString();  // Generate a unique UUID
+        return baseEmail.replace("@", "+" + uniqueId + "@");  // Insert the unique ID into the email address
+    }
 }

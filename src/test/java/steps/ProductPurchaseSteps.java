@@ -76,7 +76,7 @@ public class ProductPurchaseSteps extends CommonMethods {
         sendText(emailAddress, ConfigReader.getPropertyValue("emailAddress"));
 
         WebElement phone = driver.findElement(By.xpath("//input[@id='input-payment-telephone']"));
-        sendText(phone,  ConfigReader.getPropertyValue("phone"));
+        sendText(phone, ConfigReader.getPropertyValue("phone"));
 
         WebElement password = driver.findElement(By.xpath("//input[@id='input-payment-password']"));
         sendText(password,ConfigReader.getPropertyValue("password"));
