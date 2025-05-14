@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.HomePage;
 import utils.CommonMethods;
 import utils.ConfigReader;
 
@@ -25,11 +26,10 @@ public class ProductPurchaseSteps extends CommonMethods {
 
     @When("user searches for a product")
     public void user_searches_for_a_product() {
-        WebElement searchBar = driver.findElement(By.xpath("(//input[@name=\"search\"])[1]"));
-        sendText(searchBar, ConfigReader.getPropertyValue("product"));
+        HomePage homepage = new HomePage();
 
-        WebElement searchButton = driver.findElement(By.xpath("//button[normalize-space()='Search']"));
-        click(searchButton);
+        sendText(homepage.searchBar, ConfigReader.getPropertyValue("product"));
+        click(homepage.searchButton);
 
     }
     @When("user hovers over the product and clicks add to cart")
