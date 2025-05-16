@@ -1,7 +1,6 @@
 package utils;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -44,6 +43,7 @@ public class CommonMethods extends PageInitializer {
         driver.manage().window().maximize();
         driver.get(ConfigReader.getPropertyValue("url"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(Constants.IMPLICIT_WAIT));
+        initializePageObjects();
 
     }
     public static void closeBrowser() {

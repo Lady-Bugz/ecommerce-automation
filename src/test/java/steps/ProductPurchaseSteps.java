@@ -4,17 +4,20 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pages.HomePage;
 import utils.CommonMethods;
 import utils.ConfigReader;
+import utils.Constants;
+
 
 import java.time.Duration;
 import java.util.List;
+
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertTrue;
 
 public class ProductPurchaseSteps extends CommonMethods {
 
@@ -26,36 +29,45 @@ public class ProductPurchaseSteps extends CommonMethods {
 
     @When("user searches for a product")
     public void user_searches_for_a_product() {
-        HomePage homepage = new HomePage();
+        String searchTerm = ConfigReader.getPropertyValue("product");
 
-        sendText(homepage.searchBar, ConfigReader.getPropertyValue("product"));
+        // Perform the search action
+        sendText(homepage.searchBar, searchTerm);
         click(homepage.searchButton);
 
+        // Use the EXPLICIT_WAIT constant from Constants
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Constants.EXPLICIT_WAIT));
+        wait.until(ExpectedConditions.visibilityOf(homepage.productGrid));
+        wait.until(ExpectedConditions.visibilityOfAllElements(homepage.products));
+
+        // Assert that the product grid is displayed
+        assertTrue("Product grid is not visible", homepage.productGrid.isDisplayed());
+
+        // Assert that the product grid has at least 4 products
+        assertTrue("Product grid does not contain enough products", homepage.products.size() >= 4);
+
     }
+
     @When("user hovers over the product and clicks add to cart")
     public void user_hovers_over_the_product_and_clicks_add_to_cart() {
-        //locate the grid
-        WebElement productGrid= driver.findElement(By.cssSelector("div[data-grid=\"product-layout product-grid no-desc col-xl-4 col-lg-4 col-md-4 col-sm-6 col-6\"]"));
-        // Get all the products elements
-        List<WebElement> products = productGrid.findElements(By.cssSelector("div.product-layout"));
-
-        // Check if there are at least 4 products
-        if (products.size() >= 4) {
-            try {
+        try {
+            if (homepage.products.size() >= 4) {
                 // Get the 4th product (index 3)
-                WebElement fourthProduct = products.get(3);
-
+                WebElement fourthProduct = homepage.products.get(3);
                 hoverOverElement(driver, fourthProduct);
 
-               WebElement cartIcon = fourthProduct.findElement(By.cssSelector("button.btn.btn-cart.cart-75"));
+                // Find the cart icon inside the 4th product and click on it
+                WebElement cartIcon = fourthProduct.findElement(By.cssSelector("button.btn.btn-cart.cart-75"));
                 click(cartIcon);
 
-                System.out.println("Hovered over the 4th product");
-            } catch (Exception e) {
-                System.out.println("Error hovering over the 4th product: " + e.getMessage());
+                System.out.println("Hovered over the 4th product and clicked the cart icon.");
+            } else {
+                System.out.println("There are fewer than 4 products in the grid.");
             }
-        } else {
-            System.out.println("There are less than 4 products in the grid.");
+        } catch (NoSuchElementException e) {
+            fail("Element not found: " + e.getMessage());
+        } catch (Exception e) {
+            fail("Error interacting with the 4th product: " + e.getMessage());
         }
     }
 
