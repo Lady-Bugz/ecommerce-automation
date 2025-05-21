@@ -9,6 +9,13 @@ import java.util.List;
 
 public class HomePage extends CommonMethods {
 
+
+    @FindBy(xpath = "//strong[contains(text(),'This is a dummy website for Web Automation Testing')]\n")
+    public WebElement homePageText;
+
+    @FindBy(xpath = "//a[@class='d-block' and @title='MPOW H12 RC Headphone']")
+    public WebElement homePageProduct;
+
     @FindBy(xpath = "(//input[@name=\"search\"])[1]")
     public WebElement searchBar;
 
@@ -25,6 +32,14 @@ public class HomePage extends CommonMethods {
     public List<WebElement> products;  // List of product elements
 
     // Since I look for the cart icon dynamically inside each product i don't need a single cartIcon locator here
+
+    @FindBy(xpath = "//div[contains(@class, 'toast-body')]" )
+    public WebElement cartPopUp;
+
+    @FindBy(xpath = "//a[@class='btn btn-secondary btn-block']" )
+    public WebElement checkoutButton;
+
+
 
     // Constructor to initialize all elements
     public HomePage(){

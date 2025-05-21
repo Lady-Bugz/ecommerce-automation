@@ -1,6 +1,5 @@
 package runner;
 
-
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
@@ -10,7 +9,7 @@ import org.junit.runner.RunWith;
         features = "src/test/resources/features/",
         glue = "steps",
         dryRun = false,
-        tags ="@smoke",
+        tags ="@e2e and @positive",
         monochrome = true,
         plugin ={"pretty"}
 
@@ -18,6 +17,6 @@ import org.junit.runner.RunWith;
 
 
 
-public class SmokeTest {
 
+public class E2ETest {
 }

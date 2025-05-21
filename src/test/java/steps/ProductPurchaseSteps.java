@@ -5,6 +5,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -14,7 +15,6 @@ import utils.Constants;
 
 
 import java.time.Duration;
-import java.util.List;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +25,29 @@ public class ProductPurchaseSteps extends CommonMethods {
     @Given("user is navigated to the application")
     public void user_is_navigated_to_the_application() {
         openBrowserAndLaunchApplication();
+
+        assertTrue("Home Page is visible",homepage.homePageText.isDisplayed());
+    }
+
+    @When("user click on product")
+    public void user_click_on_product() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Constants.EXPLICIT_WAIT));
+            WebElement product = wait.until(ExpectedConditions.visibilityOf(homepage.homePageProduct));
+            product.click();
+        } catch (TimeoutException e) {
+            // Element not found or not visible within timeout
+            // Handle failure: you can throw an assertion failure or log a message
+            fail("Product was not found or not visible to click");
+        }
+
+
+    }
+
+    @Then("add to cart button is visible")
+    public void add_to_cart_button_is_visible() {
+        assertTrue("Add to Cart button is not visible", productpage.addToCartButton.isDisplayed());
+
     }
 
     @When("user searches for a product")
@@ -48,6 +71,7 @@ public class ProductPurchaseSteps extends CommonMethods {
 
     }
 
+
     @When("user hovers over the product and clicks add to cart")
     public void user_hovers_over_the_product_and_clicks_add_to_cart() {
         try {
@@ -69,13 +93,21 @@ public class ProductPurchaseSteps extends CommonMethods {
         } catch (Exception e) {
             fail("Error interacting with the 4th product: " + e.getMessage());
         }
+
+        assertTrue("Success: You have added HTC Touch HD to your shopping cart!", homepage.cartPopUp.isDisplayed());
+
     }
 
     @When("user proceeds to checkout from the pop-up displayed")
     public void user_proceeds_to_checkout_from_the_pop_up_displayed() {
-        WebElement checkOut = driver.findElement(By.xpath("//a[@class='btn btn-secondary btn-block']"));
-                jsClick(checkOut);
+        jsClick(homepage.checkoutButton);
+
+        assertTrue("Checkout breadcrumb not displayed", checkoutpage.isCheckoutBreadcrumbDisplayed());
+
     }
+
+
+
     @When("user fills in details")
     public void user_fills_in_details() {
         WebElement firstName = driver.findElement(By.xpath("//input[@id='input-payment-firstname']"));
