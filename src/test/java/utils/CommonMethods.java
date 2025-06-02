@@ -85,9 +85,9 @@ public class CommonMethods extends PageInitializer {
         actions.moveToElement(element).perform();
     }
 
-
-
-
+    public String getCurrentPageTitleOrUrl() {
+        return driver.getCurrentUrl();
+    }
 
 
 

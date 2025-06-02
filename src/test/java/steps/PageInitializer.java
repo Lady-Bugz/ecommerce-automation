@@ -2,17 +2,19 @@ package steps;
 
 import pages.CheckoutPage;
 import pages.HomePage;
-import pages.ProductPage;
+import pages.OrderConfirmationPage;
 
 public class PageInitializer {
 
-    public static HomePage homepage;
-    public static CheckoutPage checkoutpage;
-    public static ProductPage productpage;
+    public static HomePage homePage;
+    public static CheckoutPage checkoutPage;
+    public static OrderConfirmationPage orderConfirmationPage;
+
 
     public static void initializePageObjects(){
-        homepage = new HomePage();
-        checkoutpage = new CheckoutPage();
-        productpage =new ProductPage();
+        homePage = new HomePage();
+        checkoutPage = new CheckoutPage();
+        orderConfirmationPage =new OrderConfirmationPage();
+
     }
 }

@@ -1,21 +1,18 @@
 Feature: Product Purchase Functionality
 
   Background:
-    Given user is navigated to the application
+    When user searches for a product
+    And user adds a product to cart
 
   @smoke
-  Scenario: Basic product purchase flow
-    * user click on product
-    * add to cart button is visible
-
+  Scenario: User can search and add product to cart
+    Then verify cart contains product
 
   @e2e @positive
-  Scenario: Successful purchase process
-    *  user searches for a product
-    *  user hovers over the product and clicks add to cart
-    *  user proceeds to checkout from the pop-up displayed
-    *  user fills in details
-    *  user unchecks and checkmarks boxes
-    *  user completes the checkout process
+  Scenario: User completes order placement successfully
+    And user navigates to the checkout page
+    And user fills in checkout details
+    And user unchecks and checkmarks boxes
+    Then user submits order
 
 

@@ -13,9 +13,6 @@ public class HomePage extends CommonMethods {
     @FindBy(xpath = "//strong[contains(text(),'This is a dummy website for Web Automation Testing')]\n")
     public WebElement homePageText;
 
-    @FindBy(xpath = "//a[@class='d-block' and @title='MPOW H12 RC Headphone']")
-    public WebElement homePageProduct;
-
     @FindBy(xpath = "(//input[@name=\"search\"])[1]")
     public WebElement searchBar;
 

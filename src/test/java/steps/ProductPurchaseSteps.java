@@ -5,17 +5,13 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.CommonMethods;
 import utils.ConfigReader;
 import utils.Constants;
-
-
 import java.time.Duration;
-
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertTrue;
 
@@ -26,28 +22,7 @@ public class ProductPurchaseSteps extends CommonMethods {
     public void user_is_navigated_to_the_application() {
         openBrowserAndLaunchApplication();
 
-        assertTrue("Home Page is visible",homepage.homePageText.isDisplayed());
-    }
-
-    @When("user click on product")
-    public void user_click_on_product() {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Constants.EXPLICIT_WAIT));
-            WebElement product = wait.until(ExpectedConditions.visibilityOf(homepage.homePageProduct));
-            product.click();
-        } catch (TimeoutException e) {
-            // Element not found or not visible within timeout
-            // Handle failure: you can throw an assertion failure or log a message
-            fail("Product was not found or not visible to click");
-        }
-
-
-    }
-
-    @Then("add to cart button is visible")
-    public void add_to_cart_button_is_visible() {
-        assertTrue("Add to Cart button is not visible", productpage.addToCartButton.isDisplayed());
-
+        assertTrue("Home Page is visible",homePage.homePageText.isDisplayed());
     }
 
     @When("user searches for a product")
@@ -55,29 +30,29 @@ public class ProductPurchaseSteps extends CommonMethods {
         String searchTerm = ConfigReader.getPropertyValue("product");
 
         // Perform the search action
-        sendText(homepage.searchBar, searchTerm);
-        click(homepage.searchButton);
+        sendText(homePage.searchBar, searchTerm);
+        click(homePage.searchButton);
 
         // Use the EXPLICIT_WAIT constant from Constants
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Constants.EXPLICIT_WAIT));
-        wait.until(ExpectedConditions.visibilityOf(homepage.productGrid));
-        wait.until(ExpectedConditions.visibilityOfAllElements(homepage.products));
+        wait.until(ExpectedConditions.visibilityOf(homePage.productGrid));
+        wait.until(ExpectedConditions.visibilityOfAllElements(homePage.products));
 
         // Assert that the product grid is displayed
-        assertTrue("Product grid is not visible", homepage.productGrid.isDisplayed());
+        assertTrue("Product grid is not visible", homePage.productGrid.isDisplayed());
 
         // Assert that the product grid has at least 4 products
-        assertTrue("Product grid does not contain enough products", homepage.products.size() >= 4);
+        assertTrue("Product grid does not contain enough products", homePage.products.size() >= 4);
 
     }
 
 
-    @When("user hovers over the product and clicks add to cart")
-    public void user_hovers_over_the_product_and_clicks_add_to_cart() {
+    @When("user adds a product to cart")
+    public void user_adds_a_product_to_cart() {
         try {
-            if (homepage.products.size() >= 4) {
+            if (homePage.products.size() >= 4) {
                 // Get the 4th product (index 3)
-                WebElement fourthProduct = homepage.products.get(3);
+                WebElement fourthProduct = homePage.products.get(3);
                 hoverOverElement(driver, fourthProduct);
 
                 // Find the cart icon inside the 4th product and click on it
@@ -94,89 +69,91 @@ public class ProductPurchaseSteps extends CommonMethods {
             fail("Error interacting with the 4th product: " + e.getMessage());
         }
 
-        assertTrue("Success: You have added HTC Touch HD to your shopping cart!", homepage.cartPopUp.isDisplayed());
+    }
+
+    @Then("verify cart contains product")
+    public void verify_cart_contains_product() {
+
+        String productName = ConfigReader.getPropertyValue("product");
+
+        WebDriverWait wait = getWait();
+        wait.until(ExpectedConditions.visibilityOf(homePage.cartPopUp));
+
+        String popUpText = homePage.cartPopUp.getText();
+        if (!popUpText.contains(productName)) {
+            throw new AssertionError("Pop-up did not contain product name: " + productName);
+        }
+        assertTrue("Cart pop-up is not displayed", homePage.cartPopUp.isDisplayed());
 
     }
 
-    @When("user proceeds to checkout from the pop-up displayed")
-    public void user_proceeds_to_checkout_from_the_pop_up_displayed() {
-        jsClick(homepage.checkoutButton);
+    @When("user navigates to the checkout page")
+    public void user_navigates_to_the_checkout_page() {
+        jsClick(homePage.checkoutButton);
 
-        assertTrue("Checkout breadcrumb not displayed", checkoutpage.isCheckoutBreadcrumbDisplayed());
+        WebDriverWait wait = getWait();
+        wait.until(ExpectedConditions.urlContains("checkout"));
 
+        boolean isDisplayed = checkoutPage.breadCrumbs.isDisplayed();
+        boolean isTextCorrect = checkoutPage.breadCrumbs.getText().equals("Checkout");
+
+        assertTrue("Checkout breadcrumb not displayed or incorrect", isDisplayed && isTextCorrect);
     }
 
 
+    @When("user fills in checkout details")
+    public void user_fills_in_checkout_details() {
+        sendText(checkoutPage.firstNameField, ConfigReader.getPropertyValue("firstName"));
 
-    @When("user fills in details")
-    public void user_fills_in_details() {
-        WebElement firstName = driver.findElement(By.xpath("//input[@id='input-payment-firstname']"));
-        sendText(firstName, ConfigReader.getPropertyValue("firstName"));
+        sendText(checkoutPage.lastNameField, ConfigReader.getPropertyValue("lastName"));
 
-        WebElement lastName = driver.findElement(By.xpath("//input[@id='input-payment-lastname']"));
-        sendText(lastName, ConfigReader.getPropertyValue("lastName"));
+        sendText(checkoutPage.emailField, ConfigReader.getPropertyValue("emailAddress"));
 
-        WebElement emailAddress = driver.findElement(By.xpath("//input[@id='input-payment-email']"));
-        sendText(emailAddress, ConfigReader.getPropertyValue("emailAddress"));
+        sendText(checkoutPage.phoneNumberField, ConfigReader.getPropertyValue("phone"));
 
-        WebElement phone = driver.findElement(By.xpath("//input[@id='input-payment-telephone']"));
-        sendText(phone, ConfigReader.getPropertyValue("phone"));
+        sendText(checkoutPage.passwordField, ConfigReader.getPropertyValue("password"));
 
-        WebElement password = driver.findElement(By.xpath("//input[@id='input-payment-password']"));
-        sendText(password,ConfigReader.getPropertyValue("password"));
+        sendText(checkoutPage.confirmPasswordField, ConfigReader.getPropertyValue("confirmPassword"));
 
-        WebElement confirmPassword = driver.findElement(By.xpath("//input[@id='input-payment-confirm']"));
-        sendText(confirmPassword,ConfigReader.getPropertyValue("confirmPassword"));
+        sendText(checkoutPage.companyField, ConfigReader.getPropertyValue("company"));
 
-        WebElement company = driver.findElement(By.xpath("//input[@id='input-payment-company']"));
-        sendText(company,ConfigReader.getPropertyValue("company"));
+        sendText(checkoutPage.addressField, ConfigReader.getPropertyValue("address"));
 
-        WebElement address = driver.findElement(By.xpath("//input[@id='input-payment-address-1']"));
-        sendText(address,ConfigReader.getPropertyValue("address"));
+        sendText(checkoutPage.cityField, ConfigReader.getPropertyValue("city"));
 
-        WebElement city = driver.findElement(By.xpath("//input[@id='input-payment-city']"));
-        sendText(city,ConfigReader.getPropertyValue("city"));
+        sendText(checkoutPage.postCodeField, ConfigReader.getPropertyValue("postCode"));
 
-        WebElement postcode = driver.findElement(By.xpath("//input[@id='input-payment-postcode']"));
-        sendText(postcode,ConfigReader.getPropertyValue("postCode"));
-
-       WebElement country = driver.findElement(By.xpath("//select[@id='input-payment-country']"));
        String countryName = ConfigReader.getPropertyValue("country");
-       selectDropdown(country,countryName);
+       selectDropdown(checkoutPage.countryField, countryName);
 
-        WebElement state = driver.findElement(By.xpath("//select[@id='input-payment-zone']"));
         String stateName = ConfigReader.getPropertyValue("state");
-       selectDropdown(state, stateName);
+       selectDropdown(checkoutPage.stateField, stateName);
 
     }
     @When("user unchecks and checkmarks boxes")
     public void user_unchecks_and_checkmarks_boxes() {
         WebDriverWait wait = getWait();
 
-        WebElement newsLetter = driver.findElement(By.cssSelector("label[for='input-newsletter']"));
-        wait.until(ExpectedConditions.elementToBeClickable(newsLetter));
-        click(newsLetter);
 
-        WebElement privacyPolicy = driver.findElement(By.cssSelector("label[for='input-account-agree']"));
-        wait.until(ExpectedConditions.elementToBeClickable(privacyPolicy));
-        click(privacyPolicy);
+        wait.until(ExpectedConditions.elementToBeClickable(checkoutPage.newsLetterCheckbox));
+        click(checkoutPage.newsLetterCheckbox);
 
-        WebElement termsAndConditions = driver.findElement(By.cssSelector("label[for='input-agree']"));
-        wait.until(ExpectedConditions.elementToBeClickable(termsAndConditions));
-        click(termsAndConditions);
+        wait.until(ExpectedConditions.elementToBeClickable(checkoutPage.privacyPolicyCheckbox));
+        click(checkoutPage.privacyPolicyCheckbox);
+
+        wait.until(ExpectedConditions.elementToBeClickable(checkoutPage.termsAndConditionCheckbox));
+        click(checkoutPage.termsAndConditionCheckbox);
 
     }
 
-    @Then("user completes the checkout process")
-        public void user_can_complete_the_checkout_process () {
-        WebElement continueButton = driver.findElement(By.id("button-save"));
-        click(continueButton);
+    @Then("user submits order")
+        public void user_submits_order () {
 
-        WebElement confirmOrderButton = driver.findElement(By.id("button-confirm"));
-        click(confirmOrderButton);
+        click(orderConfirmationPage.continueButton);
 
-        WebElement continueBtn = driver.findElement(By.xpath("//a[normalize-space()='Continue']"));
-        click(continueBtn);
+        click(orderConfirmationPage.confirmOrderButton);
+
+        click(orderConfirmationPage.continueButn);
 
         }
 
