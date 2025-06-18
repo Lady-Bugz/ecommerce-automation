@@ -71,8 +71,8 @@ public class ProductPurchaseSteps extends CommonMethods {
 
     }
 
-    @Then("user verifies cart contains product")
-    public void user_verifies_cart_contains_product() {
+    @Then("user verifies that cart contains product")
+    public void user_verifies_that_cart_contains_product() {
 
         String productName = ConfigReader.getPropertyValue("product");
 
