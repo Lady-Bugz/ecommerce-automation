@@ -6,7 +6,7 @@ Feature: Product Purchase Functionality
 
   @smoke
   Scenario: User can search and add product to cart
-    Then verify cart contains product
+    Then user verifies cart contains product
 
   @e2e @positive
   Scenario: User completes order placement successfully
